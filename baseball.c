@@ -3,18 +3,11 @@
 // Maybe use halfdelay to simulate pitches?
 
 char* field_path = "field.map";
-/*
-char map[58][238] = {
-"       __/																 \__       ",
-"    __/																    \__	   ",
-"___/                                                                                                                                          \___",
-
-};
-*/
 
 /* forward declarations */
 int initmap(const char *map_path);
 void initplayers();
+void pitch();
 
 int main() {
 	char ch;
@@ -42,12 +35,35 @@ int main() {
 	getch();
 	while (ch != 'q') {
 		ch = getch();
-		//printw("pressed key is %c\n", ch);
-		refresh();
+		if (ch == '\n')
+			pitch();
 	}
 	endwin();
 
 	return 0;
+}
+
+void pitch() {
+	int x = 118;
+	int y = 40;
+	int hit = 0;
+	char prevChar = ' ';
+	char ch;;
+	
+	timeout(300);
+
+	while (y < 54) {
+		ch = getch();
+		if ((ch == 'b') && (y == 53))
+			hit = 1;
+		mvaddch(y,x, prevChar);
+		prevChar = mvinch(y,x);
+		if (hit > 0)
+			y--;
+		else
+			y++;
+		mvaddch(y, x, '*');
+	}
 }
 
 int initmap(const char *map_path) {
