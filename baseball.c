@@ -9,6 +9,24 @@ int initmap(const char *map_path);
 void initplayers();
 void pitch();
 
+typedef struct {
+	int curr_x;
+	int curr_y;
+	char position;
+	char bgChar;
+} Player;
+
+Player batter;
+Player pitcher;
+Player catcher;
+Player first;
+Player second;
+Player third;
+Player shortStop;
+Player left;
+Player center;
+Player right;
+
 int main() {
 	char ch;
 
@@ -48,9 +66,9 @@ void pitch() {
 	int y = 40;
 	int hit = 0;
 	char prevChar = ' ';
-	char ch;;
+	char ch;
 	
-	timeout(300);
+	timeout(30);
 
 	while (y < 54) {
 		ch = getch();
@@ -91,14 +109,64 @@ int initmap(const char *map_path) {
 }
 
 void initplayers() {
-	mvaddch(41,118,'P');
-	mvaddch(54,118,'C');
-	mvaddch(53,116,'B');
-	mvaddch(37,142,'1');
-	mvaddch(31,131,'2');
-	mvaddch(37,94,'3');
-	mvaddch(31,105,'S');
-	mvaddch(18,75,'L');
-	mvaddch(11,119,'M');
-	mvaddch(18,161,'R');
+	pitcher.curr_x = 118;
+	pitcher.curr_y = 41;
+	pitcher.position = 'P';
+	pitcher.bgChar = ' ';
+	
+	catcher.curr_x = 118;
+	catcher.curr_y = 54;
+	catcher.position = 'c';
+	catcher.bgChar = ' ';
+
+	batter.curr_x = 116;
+	batter.curr_y = 53;
+	batter.position = 'B';
+	batter.bgChar = ' ';
+
+	first.curr_x = 142;
+	first.curr_y = 37;
+	first.position = '1';
+	first.bgChar = ' ';
+
+	second.curr_x = 131;
+	second.curr_y = 31;
+	second.position = '2';
+	second.bgChar = ' ';
+
+	third.curr_x = 94;
+	third.curr_y = 37;
+	third.position = '3';
+	third.bgChar = ' ';
+
+	shortStop.curr_x = 105;
+	shortStop.curr_y = 31;
+	shortStop.position = 'S';
+	shortStop.bgChar = ' ';
+
+	left.curr_x = 75;
+	left.curr_y = 18;
+	left.position = 'L';
+	left.bgChar = ' ';
+
+	center.curr_x = 119;
+	center.curr_y = 11;
+	center.position = 'C';
+	center.bgChar = ' ';
+
+	right.curr_x = 161;
+	right.curr_y = 18;
+	right.position = 'R';
+	right.bgChar = ' ';
+
+	mvaddch(pitcher.curr_y, pitcher.curr_x, pitcher.position);
+	mvaddch(catcher.curr_y, catcher.curr_x, catcher.position);
+	mvaddch(batter.curr_y, batter.curr_x, batter.position);
+	mvaddch(first.curr_y, first.curr_x, first.position);
+	mvaddch(second.curr_y, second.curr_x, second.position);
+	mvaddch(third.curr_y, third.curr_x, third.position);
+	mvaddch(shortStop.curr_y, shortStop.curr_x, shortStop.position);
+	mvaddch(left.curr_y, left.curr_x, left.position);
+	mvaddch(center.curr_y, center.curr_x, center.position);
+	mvaddch(right.curr_y, right.curr_x, right.position);
 }
