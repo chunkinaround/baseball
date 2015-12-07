@@ -1,20 +1,34 @@
 #include <ncurses.h>
 
-// Maybe use halfdelay to simulate pitches?
-
 char* field_path = "field.map";
-
-/* forward declarations */
-int initmap(const char *map_path);
-void initplayers();
-void pitch();
 
 typedef struct {
 	int curr_x;
 	int curr_y;
 	char position;
 	char bgChar;
+	float s_pitching;	// Used for pitcher variability, the ball's velocities can
+				// be mulitplied by this value to effect the desired pitch
+				// location. Lower value here should make a pitcher more
+				// accurate.
+	float s_batting;
+	float s_fielding;
 } Player;
+
+typedef struct {
+	float curr_x;
+	float curr_y;
+	float curr_z;
+	float x_vel;
+	float y_vel;
+	float z_vel;
+} ball;
+
+/* forward declarations */
+int initmap(const char *map_path);
+void initplayers();
+void pitch();
+void ballHit(ball hitBall);
 
 Player batter;
 Player pitcher;
@@ -27,13 +41,15 @@ Player left;
 Player center;
 Player right;
 
+ball pitchBall;
+
 int main() {
 	char ch;
 
 	initscr();
-	keypad(stdscr, TRUE);				//Enable funtion keys and keypad
-	noecho();					//Don't echo input
-	printw("Play ball!\n");
+	keypad(stdscr, TRUE);			//Enable funtion keys and keypad
+	noecho();				//Don't echo input
+	mvprintw(30, 115, "Play ball!\n");
 	refresh();
 	getch();
 	
@@ -50,7 +66,7 @@ int main() {
 
 	initplayers();
 
-	getch();
+	//getch();
 	while (ch != 'q') {
 		ch = getch();
 		if (ch == '\n')
@@ -67,8 +83,58 @@ void pitch() {
 	int hit = 0;
 	char prevChar = ' ';
 	char ch;
+	// rand() is pseudo random, always the same start value
+	int seed_x = rand() % 10;
+	int seed_y = rand() % 10;
+	int seed_z = rand() % 10;
 	
-	timeout(30);
+	mvprintw(37, 200, "seed_x = %d", seed_x);
+	mvprintw(38, 200, "seed_y = %d", seed_y);
+	mvprintw(39, 200, "seed_z = %d", seed_z);
+
+	pitchBall.curr_x = 0.0;
+	pitchBall.curr_y = 0.0;
+	pitchBall.curr_y = 0.0;
+
+	// Try timeout(30)
+	timeout(300);
+
+	while (y < 54) {
+		ch = getch();
+		if ((ch == 'b') && (y == 53)) {
+			hit = 1;
+			ballHit(pitchBall);
+		}
+		mvaddch(y,x, prevChar);
+		prevChar = mvinch(y,x);
+		y++;
+		mvaddch(y, x, '*');
+		pitchBall.curr_x += pitcher.s_pitching * seed_x;
+		pitchBall.curr_y += pitcher.s_pitching * seed_y;
+		pitchBall.curr_z += pitcher.s_pitching * seed_z;
+
+		mvprintw(40, 200, "curr_x = %f", pitchBall.curr_x);
+		mvprintw(41, 200, "curr_y = %f", pitchBall.curr_y);
+		mvprintw(42, 200, "curr_z = %f", pitchBall.curr_z);
+	}
+}
+
+void ballHit(ball hitBall) {
+	return;
+}
+/*
+void pitch() {
+	int x = 118;
+	int y = 40;
+	int hit = 0;
+	char prevChar = ' ';
+	char ch;
+	
+	pitch.curr_x = 118.0;
+	pitch.curr_y = 40;
+
+	// Try timeout(30)
+	timeout(300);
 
 	while (y < 54) {
 		ch = getch();
@@ -83,7 +149,7 @@ void pitch() {
 		mvaddch(y, x, '*');
 	}
 }
-
+*/
 int initmap(const char *map_path) {
 	FILE *mapFile;
 	int y = 0;
@@ -111,6 +177,9 @@ int initmap(const char *map_path) {
 void initplayers() {
 	pitcher.curr_x = 118;
 	pitcher.curr_y = 41;
+	pitcher.s_pitching = .001;
+	pitcher.s_batting = 0;
+	pitcher.s_fielding = 1;
 	pitcher.position = 'P';
 	pitcher.bgChar = ' ';
 	
