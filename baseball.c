@@ -19,6 +19,8 @@ typedef struct {
 	float curr_x;
 	float curr_y;
 	float curr_z;
+	float hitbox_x;
+	float hitbox_y;
 	float x_vel;
 	float y_vel;
 	float z_vel;
@@ -95,6 +97,8 @@ void pitch() {
 	pitchBall.curr_x = 0.0;
 	pitchBall.curr_y = 0.0;
 	pitchBall.curr_y = 0.0;
+	pitchBall.hitbox_x = 46.0;
+	pitchBall.hitbox_y = 34.0;
 
 	// Try timeout(30)
 	timeout(300);
@@ -109,13 +113,27 @@ void pitch() {
 		prevChar = mvinch(y,x);
 		y++;
 		mvaddch(y, x, '*');
+
+		seed_x = rand() % 10;
+		seed_y = rand() % 10;
+		seed_z = rand() % 10;
+
 		pitchBall.curr_x += pitcher.s_pitching * seed_x;
 		pitchBall.curr_y += pitcher.s_pitching * seed_y;
 		pitchBall.curr_z += pitcher.s_pitching * seed_z;
+		
+		// This makes the ball only ever move down and right
+		// need to make this +- and more variable
+		pitchBall.hitbox_x += pitcher.s_pitching * seed_x;
+		pitchBall.hitbox_y += pitcher.s_pitching * seed_y;
 
 		mvprintw(40, 200, "curr_x = %f", pitchBall.curr_x);
 		mvprintw(41, 200, "curr_y = %f", pitchBall.curr_y);
 		mvprintw(42, 200, "curr_z = %f", pitchBall.curr_z);
+		mvprintw(43, 200, "hitbox_x = %f", pitchBall.hitbox_x);
+		mvprintw(44, 200, "hitbox_y = %f", pitchBall.hitbox_y);
+		
+		mvaddch((int)pitchBall.hitbox_x, (int)pitchBall.hitbox_y, '*');
 	}
 }
 
@@ -177,7 +195,7 @@ int initmap(const char *map_path) {
 void initplayers() {
 	pitcher.curr_x = 118;
 	pitcher.curr_y = 41;
-	pitcher.s_pitching = .001;
+	pitcher.s_pitching = .055;
 	pitcher.s_batting = 0;
 	pitcher.s_fielding = 1;
 	pitcher.position = 'P';
