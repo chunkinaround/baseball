@@ -1,4 +1,6 @@
 #include <ncurses.h>
+#include <stdlib.h>
+#include <time.h>
 
 char* field_path = "field.map";
 
@@ -86,6 +88,7 @@ void pitch() {
 	char prevChar = ' ';
 	char ch;
 	// rand() is pseudo random, always the same start value
+	srand(time(NULL));
 	int seed_x = rand() % 10;
 	int seed_y = rand() % 10;
 	int seed_z = rand() % 10;
@@ -99,6 +102,9 @@ void pitch() {
 	pitchBall.curr_y = 0.0;
 	pitchBall.hitbox_x = 46.0;
 	pitchBall.hitbox_y = 34.0;
+	
+	pitchBall.x_vel = .02;
+	pitchBall.y_vel = -.6;
 
 	// Try timeout(30)
 	timeout(300);
@@ -124,9 +130,12 @@ void pitch() {
 		
 		// This makes the ball only ever move down and right
 		// need to make this +- and more variable
-		pitchBall.hitbox_x += pitcher.s_pitching * seed_x;
-		pitchBall.hitbox_y += pitcher.s_pitching * seed_y;
+		pitchBall.hitbox_x += (pitcher.s_pitching * seed_x) * pitchBall.x_vel;
+		pitchBall.hitbox_y += (pitcher.s_pitching * seed_y) * pitchBall.y_vel;
 
+		mvprintw(37, 200, "seed_x = %d", seed_x);
+		mvprintw(38, 200, "seed_y = %d", seed_y);
+		mvprintw(39, 200, "seed_z = %d", seed_z);
 		mvprintw(40, 200, "curr_x = %f", pitchBall.curr_x);
 		mvprintw(41, 200, "curr_y = %f", pitchBall.curr_y);
 		mvprintw(42, 200, "curr_z = %f", pitchBall.curr_z);
