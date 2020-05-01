@@ -56,7 +56,7 @@ int main() {
 	mvprintw(30, 115, "Play ball!\n");
 	refresh();
 	getch();
-	
+
 	clear();
 	refresh();
 
@@ -73,7 +73,7 @@ int main() {
 	//getch();
 	while (ch != 'q') {
 		ch = getch();
-		if (ch == '\n')
+		if (ch == 'p')
 			pitch();
 	}
 	endwin();
@@ -92,7 +92,7 @@ void pitch() {
 	int seed_x = rand() % 10;
 	int seed_y = rand() % 10;
 	int seed_z = rand() % 10;
-	
+
 	mvprintw(37, 200, "seed_x = %d", seed_x);
 	mvprintw(38, 200, "seed_y = %d", seed_y);
 	mvprintw(39, 200, "seed_z = %d", seed_z);
@@ -102,7 +102,7 @@ void pitch() {
 	pitchBall.curr_y = 0.0;
 	pitchBall.hitbox_x = 46.0;
 	pitchBall.hitbox_y = 34.0;
-	
+
 	pitchBall.x_vel = .02;
 	pitchBall.y_vel = -.6;
 
@@ -127,7 +127,7 @@ void pitch() {
 		pitchBall.curr_x += pitcher.s_pitching * seed_x;
 		pitchBall.curr_y += pitcher.s_pitching * seed_y;
 		pitchBall.curr_z += pitcher.s_pitching * seed_z;
-		
+
 		// This makes the ball only ever move down and right
 		// need to make this +- and more variable
 		pitchBall.hitbox_x += (pitcher.s_pitching * seed_x) * pitchBall.x_vel;
@@ -141,7 +141,8 @@ void pitch() {
 		mvprintw(42, 200, "curr_z = %f", pitchBall.curr_z);
 		mvprintw(43, 200, "hitbox_x = %f", pitchBall.hitbox_x);
 		mvprintw(44, 200, "hitbox_y = %f", pitchBall.hitbox_y);
-		
+		mvprintw(45, 200, "y = %d", y);
+
 		mvaddch((int)pitchBall.hitbox_x, (int)pitchBall.hitbox_y, '*');
 	}
 }
@@ -156,7 +157,7 @@ void pitch() {
 	int hit = 0;
 	char prevChar = ' ';
 	char ch;
-	
+
 	pitch.curr_x = 118.0;
 	pitch.curr_y = 40;
 
@@ -196,7 +197,7 @@ int initmap(const char *map_path) {
 		fread(linePtr, sizeof(char), 238, mapFile);
 		printw(linePtr);
 	}
-	refresh();	
+	refresh();
 
 	return 0;
 }
@@ -209,7 +210,7 @@ void initplayers() {
 	pitcher.s_fielding = 1;
 	pitcher.position = 'P';
 	pitcher.bgChar = ' ';
-	
+
 	catcher.curr_x = 118;
 	catcher.curr_y = 54;
 	catcher.position = 'c';
